@@ -1,7 +1,6 @@
 import axios from 'axios';
 
-// Replace with your actual Backend URL
-const URL = 'http://localhost:5000';
+const URL = 'https://e-commerce-web-d7rw.onrender.com/';
 
 export const authenticateSignup = async (data) => {
     try {
