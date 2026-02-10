@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const URL = "http://localhost:5000";
+const URL = "https://e-commerce-web-d7rw.onrender.com/";
 
 // PRODUCTS viewing from database
 export const viewProducts = async () => {
