@@ -1,0 +1,5 @@
+@import "tailwindcss";
+
+.link :hover{
+  color: blue;
+}

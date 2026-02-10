@@ -1,0 +1,112 @@
+import React from "react";
+import { Link } from "react-router-dom";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import { Navigation } from 'swiper/modules';
+import MenTopWearProductsData from "./MenTopWearProductsData";
+
+
+// MOCK DATA
+const mockProducts = MenTopWearProductsData;
+
+// Helper Functions
+
+const getFinalPrice = (product) => {
+  const price = Number(product.price ?? product.specs?.basePrice ?? 0);
+  const discount = Number(product.discount ?? 0);
+  const taxClass = Number(product.taxClass ?? 0);
+  const discountedPrice = Math.max(price - discount, 0);
+  const taxAmount = Math.round((discountedPrice * taxClass) / 100);
+  return discountedPrice + taxAmount;
+};
+
+const MenTopWearProducts = ({ filters, apiData }) => {
+  
+  // Use API Data if available, else Mock
+  const productsToDisplay = (apiData && apiData.length > 0) ? apiData : mockProducts;
+
+  const maxPrice = typeof filters.price === "number" ? filters.price : null;
+
+  let filteredProducts = productsToDisplay.filter((product) => {
+
+    const dressTypeMatch = filters.dressType.length === 0 || filters.dressType.includes(product.specs?.dressType);
+    const fabricMatch = filters.fabric.length === 0 || filters.fabric.includes(product.specs?.fabric);
+    const brandMatch = filters.brand.length === 0 || filters.brand.includes(product.brand);
+    // Handle both 'sleeve' and 'sleeveLength' properties potentially coming from different sources
+    const sleeveMatch = filters.sleeveLength.length === 0 || filters.sleeveLength.includes(product.specs?.sleeveLength);
+    const closureMatch = filters.closureType.length === 0 || filters.closureType.includes(product.specs?.closureType);
+    const fitMatch = filters.fit.length === 0 || filters.fit.includes(product.specs?.fit);
+    const finalPrice = getFinalPrice(product);
+    const priceMatch = maxPrice !== null ? finalPrice <= maxPrice : true;
+
+    return (
+      dressTypeMatch && fabricMatch && brandMatch && sleeveMatch && priceMatch && closureMatch && fitMatch
+    );
+  })
+  // ---------- SORT ----------
+  if (filters.sort === "price-asc") {
+    filteredProducts = [...filteredProducts].sort(
+      (a, b) => getFinalPrice(a) - getFinalPrice(b)
+    );
+  }
+
+  if (filters.sort === "price-desc") {
+    filteredProducts = [...filteredProducts].sort(
+      (a, b) => getFinalPrice(b) - getFinalPrice(a)
+    );
+  }
+
+
+  if (filteredProducts.length === 0) {
+      return <div className="text-center p-10 text-gray-500">No products found matching your filters.</div>
+  }
+
+  return (
+    <div className="h-min grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 flex-1">
+      {filteredProducts.map((product) => {
+        const finalPrice = getFinalPrice(product)
+        return(
+        <div key={product.id || product._id} className="border rounded-md p-4 bg-white hover:shadow-lg transition">
+          <Link to={`/product/${product._id || product.id}`}>
+              <div className="flex gap-x-8 overflow-hidden justify-center">
+                {product.images && product.images.length > 0 ? (
+                    <Swiper navigation={true} modules={[Navigation]} className="mySwiper w-60 h-60">
+                      {product.images.map((img, index) => (
+                        <SwiperSlide key={index}>
+                          <img 
+                              key={index} 
+                              src={img} 
+                              alt={product.name}
+                              className="w-60 h-60 object-contain flex-shrink-0"
+                          />
+                        </SwiperSlide>
+                      ))}
+                    </Swiper>
+                ) : (
+                    <div className="w-60 h-60 bg-gray-200 flex items-center justify-center text-gray-500">No Image</div>
+                )}
+              </div>
+          </Link>
+
+          <h3 className="text-sm font-medium mt-4 text-center sm:text-left">{product.name}</h3>
+
+          <p className="text-green-600 font-semibold mt-1 text-center sm:text-left">
+            ₹{finalPrice?.toLocaleString()}
+          </p>
+
+          <div className="text-sm mt-3 grid grid-cols-[90px_1fr] gap-y-1">
+            <span className="font-medium text-gray-500">Dress Type:</span><span>{product.specs?.dressType}</span>
+            <span className="font-medium text-gray-500">Fabric Type:</span><span>{product.specs?.fabric}</span>
+            <span className="font-medium text-gray-500">Sleeve:</span><span>{product.specs?.sleeveLength || product.specs?.sleeve}</span>
+            <span className="font-medium text-gray-500">Fit:</span><span>{product.specs?.fit}</span>
+            <span className="font-medium text-gray-500">Closure Type:</span><span>{product.specs?.closureType}</span>
+            <span className="font-medium text-gray-500">Occasion:</span><span>{product.specs?.occasion}</span>
+          </div>
+        </div>
+      )})}
+    </div>
+  );
+};
+
+export default MenTopWearProducts;

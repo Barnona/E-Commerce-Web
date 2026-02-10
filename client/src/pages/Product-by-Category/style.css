@@ -1,0 +1,14 @@
+.Electronics-section, .Fashion-section, .HomeAppliances-section, .Sports-section, .Furniture-section, .BeautyHealth-section, .BooksandToys-section{
+    align-content: flex-start;
+    background-color: #f0f0f0;
+}
+.Electronics-bars, .Fashion-bars, .HomeAppliances-bars, .Sports-bars, .Furniture-bars, .BeautyHealth-bars, .BooksandToys-bars{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 5%;
+    margin-right: 10%;
+}
+

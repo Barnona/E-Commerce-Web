@@ -1,0 +1,10 @@
+.footer-section{
+    background-color: black;
+    color: #f8f9fa;
+    padding: 20px;
+    text-align: center;
+}
+hr {
+    border: 0;
+    border-top: 1px solid rgb(120, 145, 255); 
+}

@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+.link :hover{
+  color: blue;
+}
+
+table thead tr th{
+    border: 1px solid #000;
+    padding: 6px 40px;
+}
