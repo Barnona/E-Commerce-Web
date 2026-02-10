@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // --- CONFIGURATION ---
-const URL = 'http://localhost:5000'; //backend url
+const URL = 'https://e-commerce-web-d7rw.onrender.com/'; //backend url
 
 // ==============================
 //      API FUNCTIONS
