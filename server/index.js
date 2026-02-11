@@ -10,7 +10,15 @@ const routerWishlist = require('./routes/routeWishlist.js')
 const routerOrder = require('./routes/routeOrder.js')
 const bodyParser = require('body-parser');
 const cors = require('cors');
-app.use(cors());
+app.use(cors({
+    origin: [
+        "http://localhost:5173", 
+        "http://localhost:5174",
+        "https://e-shop-es5i.onrender.com",
+        "https://your-admin-app.vercel.app"
+    ],
+    credentials: true
+}));
 Connection();
 
 app.use(bodyParser.json( { extended : true } ));
