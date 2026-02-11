@@ -14,7 +14,7 @@ app.use(cors({
     origin: [
         "http://localhost:5173", 
         "http://localhost:5174",
-        "https://e-shop-es5i.onrender.com",
+        "https://https://eshop-5p90wb3lt-barnonas-projects.vercel.app",
         "https://your-admin-app.vercel.app"
     ],
     credentials: true
