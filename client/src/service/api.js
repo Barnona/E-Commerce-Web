@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const URL = 'https://e-commerce-web-d7rw.onrender.com/';
+const URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 export const authenticateSignup = async (data) => {
     try {
