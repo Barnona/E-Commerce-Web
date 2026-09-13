@@ -34,6 +34,7 @@ const createOrder = async (req, res) => {
             });
             await user.save();
         }
+
         for (const item of products) {
             await Product.findByIdAndUpdate(item.productId, {
                 $push: {
@@ -52,90 +53,82 @@ const createOrder = async (req, res) => {
 
         if (user && user.email) {
             const message = `
-                    Thank you for your order, ${userName}!
-                    Your order has been placed successfully.
-                    Order ID: ${savedOrder._id}
-                    Total Amount: ₹${totalAmount}
-                    Payment Method: ${paymentMethod}
+Thank you for your order, ${userName}!
+Your order has been placed successfully.
+Order ID: ${savedOrder._id}
+Total Amount: ₹${totalAmount}
+Payment Method: ${paymentMethod}
 
-                    We will notify you once your order is shipped.
-                    Best Regards,
-                    E-Shop Team
-                `
+We will notify you once your order is shipped.
+Best Regards,
+E-Shop Team
+`;
+
             try {
                 await sendEmail({
                     email: user.email,
-                    subject: "Order Confirmation - E-Shop",
-                    message: message,
+                    subject: 'Order Confirmation - E-Shop',
+                    message,
                 });
-                console.log("Email sent successfully");
-            } catch (emailError) {
-                console.log("Email service failed:", emailError);
-                // We do NOT stop the response if email fails, order is still placed
+            } catch (_emailError) {
+                // Email failure must not expose transport details or block the order.
             }
         }
 
+        await Cart.deleteMany({ userId });
         res.status(201).json(savedOrder);
-        await Cart.deleteMany({ userId: userId });
-
-    } catch (error) {
-        console.log("Error in createOrder:", error);
-        res.status(500).json({ message: error.message });
+    } catch (_error) {
+        res.status(500).json({ message: 'Unable to create order' });
     }
-}
+};
 
 const getOrders = async (request, response) => {
     try {
-        const userId = request.params.userId;
-
-        const orders = await Order.find({ userId: userId }).sort({ createdAt: -1 });
-
+        const orders = await Order.find({ userId: request.params.userId }).sort({ createdAt: -1 });
         response.status(200).json(orders);
-    } catch (error) {
-        response.status(500).json({ message: error.message });
+    } catch (_error) {
+        response.status(500).json({ message: 'Unable to fetch orders' });
     }
-}
+};
 
-const getAllOrders = async (req, res) => {
-   try{
-        const orders = await Order.find({})
-        res.status(200).json(orders)
-    }catch(error){
-        console.log("Error While Getting Data from database", error)
+const getAllOrders = async (_req, res) => {
+    try {
+        const orders = await Order.find({});
+        res.status(200).json(orders);
+    } catch (_error) {
+        res.status(500).json({ message: 'Unable to fetch orders' });
     }
 };
 
 const updateOrderStatus = async (request, response) => {
     try {
         const { orderStatus, paymentStatus } = request.body;
-        
         const updatedOrder = await Order.findByIdAndUpdate(
-            request.params.id, 
-            { 
-                $set: { 
-                    orderStatus: orderStatus,
-                    paymentStatus: paymentStatus 
-                } 
-            }, 
-            { new: true } // Return the updated document
+            request.params.id,
+            { $set: { orderStatus, paymentStatus } },
+            { new: true }
         );
 
         if (!updatedOrder) {
-            return response.status(404).json({ message: "Order not found" });
+            return response.status(404).json({ message: 'Order not found' });
         }
 
         response.status(200).json(updatedOrder);
-    } catch (error) {
-        response.status(500).json({ message: error.message });
+    } catch (_error) {
+        response.status(500).json({ message: 'Unable to update order status' });
     }
-}
+};
 
 const deleteOrder = async (req, res) => {
     try {
-        await Order.findByIdAndDelete(req.params.id);
-        res.status(200).json({ message: "Order deleted successfully" });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
+        const deletedOrder = await Order.findByIdAndDelete(req.params.id);
+        if (!deletedOrder) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+        res.status(200).json({ message: 'Order deleted successfully' });
+    } catch (_error) {
+        res.status(500).json({ message: 'Unable to delete order' });
     }
 };
+
 module.exports = { createOrder, getOrders, getAllOrders, updateOrderStatus, deleteOrder };
