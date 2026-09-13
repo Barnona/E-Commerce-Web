@@ -20,7 +20,6 @@ const allowedOrigins = (process.env.CLIENT_URLS || 'http://localhost:5173,http:/
 
 app.use(cors({
     origin(origin, callback) {
-        // Allow non-browser requests (curl, health checks, server-to-server calls).
         if (!origin || allowedOrigins.includes(origin)) {
             return callback(null, true);
         }
@@ -51,7 +50,7 @@ app.use((err, _req, res, _next) => {
     });
 });
 
-const PORT = Number(process.env.PORT) || 8000;
+const PORT = Number(process.env.PORT) || 5000;
 
 async function startServer() {
     try {
