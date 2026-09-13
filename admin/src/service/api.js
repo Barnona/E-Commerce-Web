@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/$/, '');
+const URL = (import.meta.env.VITE_API_URL || 'https://e-commerce-web-d7rw.onrender.com').replace(/\/$/, '');
 
 const getError = (error, fallback) => error.response?.data || new Error(error.message || fallback);
 
