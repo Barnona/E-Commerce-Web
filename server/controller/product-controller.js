@@ -12,17 +12,13 @@ const addProduct = async (request, response) => {
 
         let imageUrls = [];
         if (request.files && request.files.length > 0) {
-            const serverUrl = (process.env.SERVER_URL || `http://localhost:${process.env.PORT || 5000}`).replace(/\/$/, '');
+            const serverUrl = (process.env.SERVER_URL || 'https://e-commerce-web-d7rw.onrender.com').replace(/\/$/, '');
             imageUrls = request.files.map(file => `${serverUrl}/uploads/${file.filename}`);
         }
 
         let parsedOrders = [];
         if (orders) {
-            try {
-                parsedOrders = JSON.parse(orders);
-            } catch (e) {
-                parsedOrders = [];
-            }
+            try { parsedOrders = JSON.parse(orders); } catch (e) { parsedOrders = []; }
         }
         
         const validPrice = isNaN(Number(price)) ? 0 : Number(price);
@@ -31,23 +27,15 @@ const addProduct = async (request, response) => {
         const validTaxClass = isNaN(Number(taxClass)) ? 0 : Number(taxClass);
 
         const newProduct = new Product({
-            name, 
-            brand, 
-            description, 
-            category, 
-            subCategory,
-            images: imageUrls,
-            orders: parsedOrders,
-            price: validPrice, 
-            stock: validStock,
-            discount: validDiscount,
-            taxClass: validTaxClass,
-            specs: specs 
+            name, brand, description, category, subCategory,
+            images: imageUrls, orders: parsedOrders,
+            price: validPrice, stock: validStock,
+            discount: validDiscount, taxClass: validTaxClass,
+            specs
         });
 
         await newProduct.save();
         response.status(201).json({ message: "Product Added Successfully", data: newProduct });
-        
     } catch (error) {
         console.error("Error in addProduct:", error.message);
         response.status(500).json({ message: "Failed to add product" });
@@ -68,24 +56,14 @@ const getProducts = async (req, response) => {
             const salePrice = (price - discount) + (price - discount) * taxClass / 100;
 
             return {
-                id: product._id,
-                name: product.name,
-                category: product.category,
-                subCategory: product.subCategory,
-                brand: product.brand,
-                industryCode: 'N/A',
-                specs: product.specs,
-                basePrice: price,
-                discount,
-                taxClass,
-                salePrice,
-                stockLevel: product.stock,
-                status,
-                orders: product.orders || [],
-                images: product.images
+                id: product._id, name: product.name,
+                category: product.category, subCategory: product.subCategory,
+                brand: product.brand, industryCode: 'N/A', specs: product.specs,
+                basePrice: price, discount, taxClass, salePrice,
+                stockLevel: product.stock, status,
+                orders: product.orders || [], images: product.images
             };
         });
-
         response.status(200).json(formattedProducts);
     } catch (error) {
         response.status(500).json({ message: "Failed to fetch products" });
@@ -94,8 +72,7 @@ const getProducts = async (req, response) => {
 
 const deleteProduct = async (request, response) => {
     try {
-        const { id } = request.params;
-        await Product.findByIdAndDelete(id);
+        await Product.findByIdAndDelete(request.params.id);
         response.status(200).json({ message: "Product deleted successfully" });
     } catch (error) {
         response.status(500).json({ message: "Failed to delete product" });
@@ -143,8 +120,7 @@ const searchProducts = async (request, response) => {
 
 const getProductsBySubCategory = async (request, response) => {
     try {
-        const subCat = request.params.subname;
-        const products = await Product.find({ subCategory: subCat });
+        const products = await Product.find({ subCategory: request.params.subname });
         response.status(200).json(products);
     } catch (error) {
         response.status(500).json({ message: "Failed to fetch category products" });
@@ -155,10 +131,8 @@ const getProductFilters = async (req, res) => {
   try {
     const { subCategory } = req.query;
     if (!subCategory) return res.status(400).json({ message: "subCategory is required" });
-
     const config = filterConfig[subCategory];
     if (!config) return res.json({ brand: [] });
-
     const query = { subCategory };
     const filters = { brand: await Product.distinct("brand", query) };
 
@@ -166,16 +140,10 @@ const getProductFilters = async (req, res) => {
       if (spec === 'capacityValue') {
         const mergedValues = await Product.aggregate([
           { $match: query },
-          {
-            $group: {
-              _id: {
-                $concat: [
-                  { $trim: { input: { $ifNull: ["$specs.capacityValue", ""] } } },
-                  { $trim: { input: { $ifNull: ["$specs.capacityUnit", ""] } } }
-                ]
-              }
-            }
-          },
+          { $group: { _id: { $concat: [
+            { $trim: { input: { $ifNull: ["$specs.capacityValue", ""] } } },
+            { $trim: { input: { $ifNull: ["$specs.capacityUnit", ""] } } }
+          ] } } },
           { $match: { _id: { $ne: "" } } }
         ]);
         filters[spec] = mergedValues.map(item => item._id);
@@ -184,7 +152,6 @@ const getProductFilters = async (req, res) => {
         if (values.length > 0) filters[spec] = values;
       }
     }
-
     res.json(filters);
   } catch (err) {
     console.error('Filter fetch failed:', err.message);
@@ -194,8 +161,7 @@ const getProductFilters = async (req, res) => {
 
 const viewProductsData = async(req,res) => {
     try {
-        const products = await Product.find({});
-        res.status(200).json(products);
+        res.status(200).json(await Product.find({}));
     } catch (error) {
         res.status(500).json({ message: "Failed to fetch product data" });
     }
