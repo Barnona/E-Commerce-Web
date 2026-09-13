@@ -13,16 +13,14 @@ const routerOrder = require('./routes/routeOrder.js');
 
 const app = express();
 
-const allowedOrigins = (process.env.CLIENT_URLS || 'http://localhost:5173,http://localhost:5174')
+const allowedOrigins = (process.env.CLIENT_URLS || 'https://eshopclient.netlify.app,https://eshopadmindashboard.netlify.app')
     .split(',')
-    .map((origin) => origin.trim())
+    .map((origin) => origin.trim().replace(/\/$/, ''))
     .filter(Boolean);
 
 app.use(cors({
     origin(origin, callback) {
-        if (!origin || allowedOrigins.includes(origin)) {
-            return callback(null, true);
-        }
+        if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
         return callback(new Error('CORS origin not allowed'));
     },
     credentials: true,
@@ -45,9 +43,7 @@ app.use('/', routerOrder);
 
 app.use((err, _req, res, _next) => {
     console.error(err);
-    res.status(err.status || 500).json({
-        message: err.message || 'Internal server error',
-    });
+    res.status(err.status || 500).json({ message: err.message || 'Internal server error' });
 });
 
 const PORT = Number(process.env.PORT) || 5000;
@@ -55,9 +51,7 @@ const PORT = Number(process.env.PORT) || 5000;
 async function startServer() {
     try {
         await Connection();
-        app.listen(PORT, () => {
-            console.log(`Server running on port ${PORT}`);
-        });
+        app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
     } catch (error) {
         console.error('Unable to start server:', error.message);
         process.exit(1);
