@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/$/, '');
+const URL = (import.meta.env.VITE_API_URL || 'https://e-commerce-web-d7rw.onrender.com').replace(/\/$/, '');
 
 const getErrorResponse = (error) => error.response || { status: 500, data: { message: error.message || 'Request failed' } };
 
@@ -65,12 +65,12 @@ export const getAllProducts = async () => {
 
 export const getProductsByCategory = async (subCategory) => {
     try { return (await axios.get(`${URL}/products/sub/${encodeURIComponent(subCategory)}`)).data; }
-    catch (_error) { return []; }
+    catch (error) { throw error.response ? error.response.data : new Error(`Failed to fetch ${subCategory} products`); }
 };
 
 export const getFilterOptions = async (subCategory) => {
     try { return (await axios.get(`${URL}/products/filters`, { params: { subCategory } })).data; }
-    catch (_error) { return {}; }
+    catch (error) { throw error.response ? error.response.data : new Error(`Failed to fetch filters for ${subCategory}`); }
 };
 
 export const searchProducts = async (query) => {
