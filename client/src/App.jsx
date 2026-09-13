@@ -13,7 +13,7 @@ import OrderDetails from "./components/Order/orderDetails.jsx";
 import Wishlist from './components/Wishlist/Wishlist.jsx'
 import Checkout from './components/checkOut/checkOut.jsx'
 import ProductDetails from './components/ProductDetails/ProductDetails.jsx'
-import { BrowserRouter as Router, Routes, Route} from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Home from './pages/Home/Home.jsx'
 import Mobiles from './pages/Product-by-Category/Electronics/Mobiles/Mobiles.jsx'
 import Laptops from './pages/Product-by-Category/Electronics/Laptops/Laptops.jsx'
@@ -44,75 +44,84 @@ import SkinCare from './pages/Product-by-Category/Beauty & Health/Skin Care/Skin
 import HairCare from './pages/Product-by-Category/Beauty & Health/Hair Care/HairCare.jsx'
 import ToysandGames from './pages/Product-by-Category/Books & Toys/ToysandGames/ToysandGames.jsx'
 import Books from './pages/Product-by-Category/Books & Toys/Books/Books.jsx'
-
 import HelpCenter from './components/HelpCenter.jsx'
 
 function App() {
-
   return (
-    <>
     <Router>
       <div className="flex flex-col min-h-screen">
-        
-        <div className='sticky top-0 z-50 shadow-md'>
+        <div className="sticky top-0 z-50 shadow-md">
           <Header />
         </div>
 
         <main className="flex-grow">
           <Routes>
-            <Route path='/signup' element={<Signup/>}/>
-            <Route path='/login' element={<Login/>}/>
-            <Route path='/settings' element={<Setting/>}/>
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/settings" element={<Setting />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password/:token" element={<ResetPassword />} />
-            <Route path='/search' element={<SearchResult/>}/>
-            <Route path='/helpcenter' element={<HelpCenter/>}/>
-            <Route path='/' element={<Home />} />
-            <Route path='/cart' element={<Cart/>}/>
-            <Route path='/orders' element={<Orders/>}/>
-            <Route path="/orders/:orderId" element={<OrderDetails/>} />
-            <Route path='/checkout' element={<Checkout/>}/>
+            <Route path="/search" element={<SearchResult />} />
+            <Route path="/helpcenter" element={<HelpCenter />} />
+            <Route path="/" element={<Home />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/orders" element={<Orders />} />
+            <Route path="/orders/:orderId" element={<OrderDetails />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/wishlist" element={<Wishlist />} />
+            <Route path="/product/:id" element={<ProductDetails />} />
 
-            <Route path='/wishlist' element={<Wishlist/>}/>
-            <Route path='/product/:id' element={<ProductDetails />} />
+            {/* Electronics */}
+            <Route path="/mobiles" element={<Mobiles />} />
+            <Route path="/laptops" element={<Laptops />} />
+            <Route path="/cameras" element={<Cameras />} />
+            <Route path="/tablets" element={<Tablets />} />
+            <Route path="/audio-devices" element={<AudioDevices />} />
 
-            <Route path='/Mobiles' element={<Mobiles/>}/>
-            <Route path='/Laptops' element={<Laptops/>}/>
-            <Route path='/Cameras' element={<Cameras/>}/>
-            <Route path='/Tablets' element={<Tablets/>}/>
-            <Route path='/Audio-Devices' element={<AudioDevices/>}/>
-            <Route path='/Men-Top-Wear' element={<MenTopWear/>}/>
-            <Route path='/Men-Bottom-Wear' element={<MenBottomWear/>}/>
-            <Route path='/Women-Top-Wear' element={<WomenTopWear/>}/>
-            <Route path='/Women-Bottom-Wear' element={<WomenBottomWear/>}/>
-            <Route path='/Men-Footwear' element={<MenFootwear/>}/>
-            <Route path='/Women-Footwear' element={<WomenFootwear/>}/>
-            <Route path='/Bags-Luggages' element={<BagsLuggages/>}/>
-            <Route path='/Kids' element={<Kids/>}/>
-            <Route path='/Kitchen-Appliances' element={<KitchenAppliances/>}/>
-            <Route path='/Large-Appliances' element={<LargeAppliances/>}/>
-            <Route path='/Small-Appliances' element={<SmallAppliances/>}/>
-            <Route path='/Home-Comforts' element={<HomeComforts/>}/>
-            <Route path='/Fitness-Equipment' element={<FitnessEquipments/>}/>
-            <Route path='/Outdoor-Sports' element={<OutdoorSports/>}/>
-            <Route path='/Indoor-Games' element={<IndoorGames/>}/>
-            <Route path='/Living-Room' element={<LivingRoom/>}/>
-            <Route path='/Bedroom' element={<Bedroom/>}/>
-            <Route path='/Dining-Room' element={<DiningRoom/>}/>
-            <Route path='/Office-Furniture' element={<OfficeFurniture/>}/>
-            <Route path='/Makeup' element={<Makeup/>}/>
-            <Route path='/Skin-Care' element={<SkinCare/>}/>
-            <Route path='/Hair-Care' element={<HairCare/>}/>
-            <Route path='/Toys-Games' element={<ToysandGames/>}/>
-            <Route path='/Books' element={<Books/>}/>
+            {/* Fashion */}
+            <Route path="/men-top-wear" element={<MenTopWear />} />
+            <Route path="/men-bottom-wear" element={<MenBottomWear />} />
+            <Route path="/women-top-wear" element={<WomenTopWear />} />
+            <Route path="/women-bottom-wear" element={<WomenBottomWear />} />
+            <Route path="/men-footwear" element={<MenFootwear />} />
+            <Route path="/women-footwear" element={<WomenFootwear />} />
+            <Route path="/bags-luggages" element={<BagsLuggages />} />
+            <Route path="/kids" element={<Kids />} />
+
+            {/* Home Appliances */}
+            <Route path="/kitchen-appliances" element={<KitchenAppliances />} />
+            <Route path="/large-appliances" element={<LargeAppliances />} />
+            <Route path="/small-appliances" element={<SmallAppliances />} />
+            <Route path="/home-comforts" element={<HomeComforts />} />
+
+            {/* Sports */}
+            <Route path="/fitness-equipment" element={<FitnessEquipments />} />
+            <Route path="/outdoor-sports" element={<OutdoorSports />} />
+            <Route path="/indoor-games" element={<IndoorGames />} />
+
+            {/* Furniture */}
+            <Route path="/living-room" element={<LivingRoom />} />
+            <Route path="/bedroom" element={<Bedroom />} />
+            <Route path="/dining-room" element={<DiningRoom />} />
+            <Route path="/office-furniture" element={<OfficeFurniture />} />
+
+            {/* Beauty & Health */}
+            <Route path="/makeup" element={<Makeup />} />
+            <Route path="/skin-care" element={<SkinCare />} />
+            <Route path="/hair-care" element={<HairCare />} />
+
+            {/* Books & Toys */}
+            <Route path="/toys-games" element={<ToysandGames />} />
+            <Route path="/books" element={<Books />} />
+
+            {/* Unknown URLs */}
+            <Route path="*" element={<Home />} />
           </Routes>
         </main>
 
-        <Footer/>
-      
+        <Footer />
       </div>
     </Router>
-    </>
   )
 }
 
